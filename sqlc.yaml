@@ -1,0 +1,22 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "./database/db/queries"
+    schema: "./database/db/schema.sql"
+    gen:
+      go:
+        package: "db"
+        out: "./db"
+        emit_json_tags: true
+        json_tags_case_style: camel
+        sql_package: "pgx/v5"
+        overrides:
+          - db_type: "uuid"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
+          - db_type: "uuid"
+            nullable: true
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"

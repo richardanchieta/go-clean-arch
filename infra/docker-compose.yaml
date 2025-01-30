@@ -1,0 +1,138 @@
+networks:
+  myapp_network:
+    name: myapp_network
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  mailpit_data:
+
+services:
+
+  nginx:
+    image: nginx:1.27.3
+    restart: always
+    networks:
+      - myapp_network
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./certificates:/certificates
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  cms:
+    image: directus/directus:11
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "cms-uploads.minio:host-gateway"
+    networks:
+      - myapp_network
+    env_file:
+      - ./envs/.cms.env
+    ports:
+      - "26003:8058"
+    depends_on:
+      - minio
+      - postgres
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    restart: always
+    env_file:
+      - ./envs/.postgres.env
+    networks:
+      - myapp_network
+    ports:
+      - 26001:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - .docker/postgres/init_db/1_init_db.sh:/docker-entrypoint-initdb.d/1_init_db.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 3
+
+  redis:
+    image: redislabs/redismod
+    restart: always
+    networks:
+      - myapp_network
+    ports:
+      - "26002:6379"
+    volumes:
+      - redis_data:/data
+
+  minio:
+    image: quay.io/minio/minio
+    command: server --console-address ":26005"
+    env_file:
+      - ./envs/.minio.env
+    networks:
+      - myapp_network
+    ports:
+      - 26004:9000
+      - 26005:17505
+    restart: always
+    volumes:
+      - minio_data:/mnt/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    restart: always
+    command:
+      - "start-dev"
+      - "--spi-theme-static-max-age=-1"
+      - "--spi-theme-cache-themes=false"
+      - "--spi-theme-cache-templates=false"
+      #- "--features=declarative-user-profile"
+    networks:
+      - myapp_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      #- "host.wsl:${HOST_IP_ADDRESS}"
+    env_file:
+      - ./envs/.keycloak.env
+    ports:
+      - 26006:8080
+    depends_on:
+      - postgres
+       # condition: service_healthy
+    volumes:
+      - .docker/keycloak/themes:/opt/keycloak/themes
+
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    volumes:
+      - mailpit_data:/data
+    ports:
+      - 26825:8025
+      - 26025:1025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - myapp_network
+
+  nats:
+    image: nats
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
+      - "9222:9222"
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --http_port 8222 -c /nats.conf"
+    volumes:
+      - .docker/nats/nats.conf:/nats.conf
+    networks:
+      - myapp_network
