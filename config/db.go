@@ -14,7 +14,7 @@ import (
 func NewDatabase() (*pgxpool.Pool, error) {
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://myapp:myapp@localhost:5432/myapp?sslmode=disable"
+		dbURL = "postgres://myapp:myapp@localhost:26001/myapp?sslmode=disable"
 	}
 
 	dbConfig, err := pgxpool.ParseConfig(dbURL)

@@ -2,7 +2,8 @@ package http
 
 import (
 	"context"
-	"myapp/internal/checkout/usecase"
+
+	"myapp/internal/features/checkout/usecase"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/google/uuid"

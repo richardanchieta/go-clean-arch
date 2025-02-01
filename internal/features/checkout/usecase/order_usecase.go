@@ -3,8 +3,8 @@ package usecase
 import (
 	"context"
 
-	"myapp/db"
-	"myapp/internal/checkout/repository"
+	"myapp/internal/dal"
+	"myapp/internal/features/checkout/repository"
 
 	"github.com/google/uuid"
 )
@@ -20,7 +20,7 @@ func NewOrderUsecase(orderRepo *repository.OrderRepository) *OrderUsecase {
 }
 
 // CreateOrder cria um pedido
-func (uc *OrderUsecase) CreateOrder(ctx context.Context, userID uuid.UUID, productID uuid.UUID, quantity int, total float64) (*db.Order, error) {
+func (uc *OrderUsecase) CreateOrder(ctx context.Context, userID uuid.UUID, productID uuid.UUID, quantity int, total float64) (*dal.Order, error) {
 	order, err := uc.orderRepo.CreateOrder(ctx, userID, productID, quantity, total)
 
 	return order, err

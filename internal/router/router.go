@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"myapp/config"
-	accountHttp "myapp/internal/account/delivery/http"
-	checkoutHttp "myapp/internal/checkout/delivery/http"
-	storefrontHttp "myapp/internal/storefront/delivery/http"
+	accountHttp "myapp/internal/features/account/delivery/http"
+	checkoutHttp "myapp/internal/features/checkout/delivery/http"
+	storefrontHttp "myapp/internal/features/storefront/delivery/http"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humagin"

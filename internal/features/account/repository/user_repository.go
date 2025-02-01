@@ -2,23 +2,23 @@ package repository
 
 import (
 	"context"
-	"myapp/db"
+	"myapp/internal/dal"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserRepository struct {
-	queries *db.Queries
+	queries *dal.Queries
 }
 
 func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
 	return &UserRepository{
-		queries: db.New(pool),
+		queries: dal.New(pool),
 	}
 }
 
-func (r *UserRepository) CreateUser(ctx context.Context, name, email, password string) (*db.User, error) {
-	user, err := r.queries.CreateUser(ctx, db.CreateUserParams{
+func (r *UserRepository) CreateUser(ctx context.Context, name, email, password string) (*dal.User, error) {
+	user, err := r.queries.CreateUser(ctx, dal.CreateUserParams{
 		Name:     name,
 		Email:    email,
 		Password: password,
@@ -29,7 +29,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, name, email, password s
 	return &user, nil
 }
 
-func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*db.User, error) {
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*dal.User, error) {
 	user, err := r.queries.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err

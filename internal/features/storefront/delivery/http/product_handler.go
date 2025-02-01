@@ -2,7 +2,7 @@ package http
 
 import (
 	"context"
-	"myapp/internal/storefront/usecase"
+	"myapp/internal/features/storefront/usecase"
 
 	"github.com/danielgtaylor/huma/v2"
 )

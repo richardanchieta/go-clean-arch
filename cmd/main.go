@@ -5,20 +5,20 @@ import (
 	"log"
 	"myapp/config"
 
-	userHttp "myapp/internal/account/delivery/http"
-	userRepo "myapp/internal/account/repository"
-	userUC "myapp/internal/account/usecase"
+	userHttp "myapp/internal/features/account/delivery/http"
+	userRepo "myapp/internal/features/account/repository"
+	userUC "myapp/internal/features/account/usecase"
 
-	orderHttp "myapp/internal/checkout/delivery/http"
-	orderRepo "myapp/internal/checkout/repository"
-	orderUC "myapp/internal/checkout/usecase"
+	orderHttp "myapp/internal/features/checkout/delivery/http"
+	orderRepo "myapp/internal/features/checkout/repository"
+	orderUC "myapp/internal/features/checkout/usecase"
 
-	productHttp "myapp/internal/storefront/delivery/http"
-	productRepo "myapp/internal/storefront/repository"
-	productUC "myapp/internal/storefront/usecase"
+	productHttp "myapp/internal/features/storefront/delivery/http"
+	productRepo "myapp/internal/features/storefront/repository"
+	productUC "myapp/internal/features/storefront/usecase"
 
+	"myapp/internal/router"
 	"myapp/pkg/payments"
-	"myapp/router"
 
 	"go.uber.org/fx"
 )

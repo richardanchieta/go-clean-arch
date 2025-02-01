@@ -12,7 +12,7 @@ volumes:
 services:
 
   nginx:
-    image: nginx:1.27.3
+    image: nginx:1.27.3 u
     restart: always
     networks:
       - myapp_network
@@ -92,21 +92,18 @@ services:
       - "--spi-theme-static-max-age=-1"
       - "--spi-theme-cache-themes=false"
       - "--spi-theme-cache-templates=false"
-      #- "--features=declarative-user-profile"
     networks:
       - myapp_network
     extra_hosts:
       - "host.docker.internal:host-gateway"
-      #- "host.wsl:${HOST_IP_ADDRESS}"
     env_file:
       - ./envs/.keycloak.env
     ports:
       - 26006:8080
     depends_on:
       - postgres
-       # condition: service_healthy
-    volumes:
-      - .docker/keycloak/themes:/opt/keycloak/themes
+    #volumes:
+    #  - .docker/keycloak/themes:/opt/keycloak/themes
 
   mailpit:
     image: axllent/mailpit
