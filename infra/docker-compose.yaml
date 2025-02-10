@@ -12,7 +12,7 @@ volumes:
 services:
 
   nginx:
-    image: nginx:1.27.3 u
+    image: nginx:1.27.3
     restart: always
     networks:
       - myapp_network
